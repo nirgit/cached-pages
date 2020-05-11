@@ -1,4 +1,6 @@
-import React, { lazy, Suspense } from "react";
+import React from "react";
+import Posts from './pages/Posts'
+import Messages from './pages/Messages'
 import "./styles.css";
 
 const MENU_ITEM_IDS = {
@@ -28,20 +30,18 @@ const renderMainContent = (routeId, store, data) => {
   let PageComponent = null;
   switch(routeId) {
     case MENU_ITEM_IDS.POSTS: {
-      PageComponent = lazy(() => import("./pages/Posts"))
+      PageComponent = Posts
       break;
     }
     case MENU_ITEM_IDS.MESSAGES: {
-      PageComponent = lazy(() => import("./pages/Messages"))
+      PageComponent = Messages
       break;
     }
     default: break;
   }
 
   return (
-    <Suspense fallback={"Loading page..."}>
-      <PageComponent store={store} data={getPageData(routeId, data)} />
-    </Suspense>
+    <PageComponent store={store} data={getPageData(routeId, data)} />
   );
 };
 

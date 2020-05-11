@@ -1,23 +1,25 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import ReactDOMServer from 'react-dom/server';
 import createStore from './store';
 
 import App from "./App";
 
+const rootElement = document.getElementById("root");
+
 const store = createStore({
-  route_id: 0
+  routeId: 0
 })
 
-function renderApp() {
-  const rootElement = document.getElementById("root");
-  ReactDOM.render(
-    <React.StrictMode>
-      <App store={store} data={store.get()} routeId={store.get().routeId} />
-    </React.StrictMode>,
-    rootElement
-  );
+function smartRenderApp(isInitialRender) {
+  ReactDOM.unmountComponentAtNode(rootElement)
+  const renderedApp = ReactDOMServer.renderToString(<App store={store} data={store.get()} routeId={store.get().routeId} />)
+  rootElement.innerHTML = renderedApp;
+  ReactDOM.hydrate(<App store={store} data={store.get()} routeId={store.get().routeId} />, rootElement, () => {
+    console.log("Hydration done!")
+  })
 }
 
-store.addListener(renderApp)
+store.addListener(smartRenderApp)
 
-renderApp()
+smartRenderApp(true)
