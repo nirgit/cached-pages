@@ -1,5 +1,5 @@
-const store = (function() {
-    let data = {}
+function createStore(initialData = {}) {
+    let data = initialData
 
     const listeners = []
     const notifyListeners = () => listeners.forEach(listener => listener());
@@ -15,6 +15,9 @@ const store = (function() {
             case 'set_messages': {
                 dataToUpdate = Object.assign({}, dataToUpdate, {messages: dataItem.messages})
                 break;
+            }
+            case 'set_route': {
+                dataToUpdate = Object.assign({}, dataToUpdate, {routeId: dataItem.routeId})
             }
             default: break;
         }
@@ -34,6 +37,6 @@ const store = (function() {
         },
         set
     }
-})()
+}
 
-export default store;
+export default createStore;

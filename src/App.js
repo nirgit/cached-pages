@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useState } from "react";
+import React, { lazy, Suspense } from "react";
 import "./styles.css";
 
 const MENU_ITEM_IDS = {
@@ -7,8 +7,8 @@ const MENU_ITEM_IDS = {
   MESSAGES: 2
 };
 
-const getPageData = (selectedMenuItem, data) => {
-  switch(selectedMenuItem) {
+const getPageData = (routeId, data) => {
+  switch(routeId) {
     case MENU_ITEM_IDS.POSTS: {
       return data.posts
     }
@@ -20,13 +20,13 @@ const getPageData = (selectedMenuItem, data) => {
   return null
 }
 
-const renderMainContent = (selectedMenuItem, store, data) => {
-  if (selectedMenuItem === MENU_ITEM_IDS.NONE) {
+const renderMainContent = (routeId, store, data) => {
+  if (routeId === MENU_ITEM_IDS.NONE) {
     return null;
   }
 
   let PageComponent = null;
-  switch(selectedMenuItem) {
+  switch(routeId) {
     case MENU_ITEM_IDS.POSTS: {
       PageComponent = lazy(() => import("./pages/Posts"))
       break;
@@ -40,32 +40,30 @@ const renderMainContent = (selectedMenuItem, store, data) => {
 
   return (
     <Suspense fallback={"Loading page..."}>
-      <PageComponent store={store} data={getPageData(selectedMenuItem, data)} />
+      <PageComponent store={store} data={getPageData(routeId, data)} />
     </Suspense>
   );
 };
 
-export default function App({store, data}) {
-  const [selected, setSelected] = useState(MENU_ITEM_IDS.NONE);
-
+export default function App({store, data, routeId = MENU_ITEM_IDS.NONE}) {
   return (
     <div className="App">
       <nav>
         <ul>
           <li
-            onClick={() => setSelected(MENU_ITEM_IDS.POSTS)}
+            onClick={() => store.set({type: "set_route", routeId: MENU_ITEM_IDS.POSTS})}
             className={
               "menu-item" +
-              (selected === MENU_ITEM_IDS.POSTS ? " menu-item-active" : "")
+              (routeId === MENU_ITEM_IDS.POSTS ? " menu-item-active" : "")
             }
           >
             Posts
           </li>
           <li
-            onClick={() => setSelected(MENU_ITEM_IDS.MESSAGES)}
+            onClick={() => store.set({type: "set_route", routeId: MENU_ITEM_IDS.MESSAGES})}
             className={
               "menu-item" +
-              (selected === MENU_ITEM_IDS.MESSAGES ? " menu-item-active" : "")
+              (routeId === MENU_ITEM_IDS.MESSAGES ? " menu-item-active" : "")
             }
           >
             Messages
@@ -73,7 +71,7 @@ export default function App({store, data}) {
         </ul>
       </nav>
 
-      <main>{renderMainContent(selected, store, data)}</main>
+      <main>{renderMainContent(routeId, store, data)}</main>
     </div>
   );
 }
