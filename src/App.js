@@ -11,21 +11,19 @@ const renderMainContent = selectedMenuItem => {
   if (selectedMenuItem === MENU_ITEM_IDS.NONE) {
     return null;
   }
-  const moduleToLoad =
-    selectedMenuItem === MENU_ITEM_IDS.POSTS
-      ? "/src/pages/posts"
-      : "/src/pages/messages";
 
-  const PageComponent = lazy(
-    () =>
-      new Promise(res => {
-        setTimeout(() => {
-          import(moduleToLoad).then(component => {
-            res(component);
-          });
-        }, 500);
-      })
-  );
+  let PageComponent = null;
+  switch(selectedMenuItem) {
+    case MENU_ITEM_IDS.POSTS: {
+      PageComponent = lazy(() => import("./pages/Posts"))
+      break;
+    }
+    case MENU_ITEM_IDS.MESSAGES: {
+      PageComponent = lazy(() => import("./pages/Messages"))
+      break;
+    }
+    default: break;
+  }
 
   return (
     <Suspense fallback={"Loading page..."}>

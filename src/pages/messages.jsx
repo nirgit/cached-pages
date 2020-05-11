@@ -15,6 +15,10 @@ class Messages extends React.Component {
     });
   }
 
+  handleMsgClick(e) {
+    console.log("msg click", e.target.getAttribute('msgid'))
+  }
+
   renderMessages() {
     if (this.state.messages.length === 0) {
       return <div>Fetching messages...</div>;
@@ -23,7 +27,7 @@ class Messages extends React.Component {
       <ul>
         {this.state.messages.map(dataItem => {
           return (
-            <li>
+            <li key={dataItem.id} msgid={dataItem.id} onClick={e => this.handleMsgClick(e)}>
               {dataItem.sender}: {dataItem.text}
             </li>
           );

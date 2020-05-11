@@ -25,7 +25,7 @@ class Posts extends Component {
     return (
       <ul onClick={e => this.handlePostClick(e)}>
         {this.state.posts.map(post => (
-          <li key={post.id} postId={post.id}>
+          <li key={post.id} postid={post.id}>
             {post.text}
           </li>
         ))}
