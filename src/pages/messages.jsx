@@ -2,17 +2,16 @@ import React from "react";
 import DataSource from "../dataSource";
 
 class Messages extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      messages: []
-    };
+  getMessages() {
+    return this.props.data || []
   }
 
   componentDidMount() {
-    DataSource.getMessages().then(msgs => {
-      this.setState({ messages: msgs });
-    });
+    if (this.getMessages().length === 0) {
+      DataSource.getMessages().then(msgs => {
+        this.props.store.set({type: "set_messages", messages: msgs})
+      });
+    }
   }
 
   handleMsgClick(e) {
@@ -20,12 +19,12 @@ class Messages extends React.Component {
   }
 
   renderMessages() {
-    if (this.state.messages.length === 0) {
+    if (this.getMessages().length === 0) {
       return <div>Fetching messages...</div>;
     }
     return (
       <ul>
-        {this.state.messages.map(dataItem => {
+        {this.getMessages().map(dataItem => {
           return (
             <li key={dataItem.id} msgid={dataItem.id} onClick={e => this.handleMsgClick(e)}>
               {dataItem.sender}: {dataItem.text}
@@ -37,6 +36,7 @@ class Messages extends React.Component {
   }
 
   render() {
+    console.log("Rendering Messages")
     return (
       <div>
         <h2>Messages</h2>

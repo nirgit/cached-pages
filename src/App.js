@@ -7,7 +7,20 @@ const MENU_ITEM_IDS = {
   MESSAGES: 2
 };
 
-const renderMainContent = selectedMenuItem => {
+const getPageData = (selectedMenuItem, data) => {
+  switch(selectedMenuItem) {
+    case MENU_ITEM_IDS.POSTS: {
+      return data.posts
+    }
+    case MENU_ITEM_IDS.MESSAGES: {
+      return data.messages
+    }
+    default: return null
+  }
+  return null
+}
+
+const renderMainContent = (selectedMenuItem, store, data) => {
   if (selectedMenuItem === MENU_ITEM_IDS.NONE) {
     return null;
   }
@@ -27,12 +40,12 @@ const renderMainContent = selectedMenuItem => {
 
   return (
     <Suspense fallback={"Loading page..."}>
-      <PageComponent />
+      <PageComponent store={store} data={getPageData(selectedMenuItem, data)} />
     </Suspense>
   );
 };
 
-export default function App() {
+export default function App({store, data}) {
   const [selected, setSelected] = useState(MENU_ITEM_IDS.NONE);
 
   return (
@@ -60,7 +73,7 @@ export default function App() {
         </ul>
       </nav>
 
-      <main>{renderMainContent(selected)}</main>
+      <main>{renderMainContent(selected, store, data)}</main>
     </div>
   );
 }

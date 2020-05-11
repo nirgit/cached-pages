@@ -2,11 +2,8 @@ import React, { Component } from "react";
 import DataSource from "../dataSource";
 
 class Posts extends Component {
-  constructor() {
-    super();
-    this.state = {
-      posts: []
-    };
+  getPosts() {
+    return this.props.data || []
   }
 
   handlePostClick(e) {
@@ -14,17 +11,19 @@ class Posts extends Component {
   }
 
   componentDidMount() {
-    DataSource.getPosts().then(posts => {
-      this.setState({ posts: posts });
-    });
+    if (this.getPosts().length === 0) {
+      DataSource.getPosts().then(posts => {
+        this.props.store.set({type: "set_posts", posts})
+      });
+    }
   }
 
   renderPosts() {
-    if (this.state.posts.length === 0) return <div>Loading posts...</div>;
+    if (this.getPosts().length === 0) return <div>Loading posts...</div>;
 
     return (
       <ul onClick={e => this.handlePostClick(e)}>
-        {this.state.posts.map(post => (
+        {this.getPosts().map(post => (
           <li key={post.id} postid={post.id}>
             {post.text}
           </li>
@@ -34,6 +33,7 @@ class Posts extends Component {
   }
 
   render() {
+    console.log("Rendering Posts")
     return (
       <div>
         <h2>Posts</h2>
