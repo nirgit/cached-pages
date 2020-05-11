@@ -1,0 +1,23 @@
+.App {
+  font-family: sans-serif;
+  text-align: center;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+.menu-item {
+  cursor: pointer;
+  display: inline-block;
+  border: 1px solid black;
+  border-radius: 3px;
+  background: lightgray;
+  padding: 8px;
+  margin-right: 10px;
+}
+
+.menu-item-active {
+  background: cyan;
+}
