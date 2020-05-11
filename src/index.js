@@ -86,17 +86,19 @@ function startAppWithCache() {
     const cachedScreenHTML = getCachedScreen(store.get().routeId, store.get())
     let renderedApp = null
     if (cachedScreenHTML) {
-      console.log("---> skipping react render")
+      // console.log("---> skipping react render")
       renderedApp = cachedScreenHTML
     } else {
-      console.log("*** React render HTML ***")
+      // console.log("*** React render HTML ***")
       renderedApp = ReactDOMServer.renderToString(<App store={store} data={store.get()} routeId={store.get().routeId} />)
     }
     // set the new screen on the DOM!
     rootElement.innerHTML = renderedApp;
     // Hydrate
+    window.requestAnimationFrame(() => {
     ReactDOM.hydrate(<App store={store} data={store.get()} routeId={store.get().routeId} />, rootElement, () => {
-      console.log("Hydration done!")
+      // console.log("Hydration done!")
+      })
     })
   }
 

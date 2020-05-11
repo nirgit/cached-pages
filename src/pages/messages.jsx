@@ -2,6 +2,11 @@ import React from "react";
 import DataSource from "../dataSource";
 
 class Messages extends React.Component {
+
+  shouldComponentUpdate(nextProps) {
+    return this.props.data !== nextProps.data
+  }
+
   getMessages() {
     return this.props.data || []
   }

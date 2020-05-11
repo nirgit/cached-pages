@@ -2,6 +2,11 @@ import React, { Component } from "react";
 import DataSource from "../dataSource";
 
 class Posts extends Component {
+
+  shouldComponentUpdate(nextProps) {
+    return this.props.data !== nextProps.data
+  }
+
   getPosts() {
     return this.props.data || []
   }
