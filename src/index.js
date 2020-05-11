@@ -54,34 +54,62 @@ function setScreenToCache(routeId, prevData, html) {
       screenCache[routeId][prevData.messages.id] = html
       break;
     }
+    default: break;
   }
 }
 
-function smartRenderApp(isInitialRender, prevData) {
-  // store into the cache the latest screen
-  setScreenToCache(lastScreenId, prevData, rootElement.innerHTML)
-  lastScreenId = store.get().routeId
-  // React cleanup
-  ReactDOM.unmountComponentAtNode(rootElement)
-
-  // pull out from the cache!
-  const cachedScreenHTML = getCachedScreen(store.get().routeId, store.get())
-  let renderedApp = null
-  if (cachedScreenHTML) {
-    console.log("---> skipping react render")
-    renderedApp = cachedScreenHTML
-  } else {
-    console.log("*** React render HTML ***")
-    renderedApp = ReactDOMServer.renderToString(<App store={store} data={store.get()} routeId={store.get().routeId} />)
+function startApp() {
+  function renderApp() {
+    const rootElement = document.getElementById("root");
+    ReactDOM.render(
+      <React.StrictMode>
+        <App store={store} data={store.get()} routeId={store.get().routeId} />
+      </React.StrictMode>,
+      rootElement
+    );
   }
-  // set the new screen on the DOM!
-  rootElement.innerHTML = renderedApp;
-  // Hydrate
-  ReactDOM.hydrate(<App store={store} data={store.get()} routeId={store.get().routeId} />, rootElement, () => {
-    console.log("Hydration done!")
-  })
+
+  store.addListener(renderApp)
+
+  renderApp()
 }
 
-store.addListener(smartRenderApp.bind(null, false))
+function startAppWithCache() {
+  function smartRenderApp(isInitialRender, prevData) {
+    // store into the cache the latest screen
+    setScreenToCache(lastScreenId, prevData, rootElement.innerHTML)
+    lastScreenId = store.get().routeId
+    // React cleanup
+    ReactDOM.unmountComponentAtNode(rootElement)
 
-smartRenderApp(true)
+    // pull out from the cache!
+    const cachedScreenHTML = getCachedScreen(store.get().routeId, store.get())
+    let renderedApp = null
+    if (cachedScreenHTML) {
+      console.log("---> skipping react render")
+      renderedApp = cachedScreenHTML
+    } else {
+      console.log("*** React render HTML ***")
+      renderedApp = ReactDOMServer.renderToString(<App store={store} data={store.get()} routeId={store.get().routeId} />)
+    }
+    // set the new screen on the DOM!
+    rootElement.innerHTML = renderedApp;
+    // Hydrate
+    ReactDOM.hydrate(<App store={store} data={store.get()} routeId={store.get().routeId} />, rootElement, () => {
+      console.log("Hydration done!")
+    })
+  }
+
+  store.addListener(smartRenderApp.bind(null, false))
+
+  smartRenderApp(true)
+}
+
+const SHOULD_CACHE_SCREENS = window.location.search.replace("?", "").split("&").indexOf("cache=1") >= 0
+if (SHOULD_CACHE_SCREENS) {
+  console.log('-------- app with cache -------')
+  startAppWithCache()
+} else {
+  console.log('-------- normal app -------')
+  startApp()
+}

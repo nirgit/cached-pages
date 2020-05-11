@@ -2,10 +2,12 @@
  * A module simulating a data source facade
  */
 
-const SIMULATED_TIMEOUT = 1500;
+const SIMULATED_TIMEOUT = 0;
+const NUMBER_OF_POSTS = 1000;
+const NUMBER_OF_MSGS = 1500;
 
 const createRandomMessages = () => {
-  return Array(10)
+  return Array(NUMBER_OF_POSTS)
     .fill(1)
     .map((_, idx) => createRandomMessage(idx));
 };
@@ -19,7 +21,7 @@ const createRandomMessage = id => {
 };
 
 const createRandomPosts = () => {
-  return Array(15)
+  return Array(NUMBER_OF_MSGS)
     .fill(1)
     .map((_, idx) => createRandomPost(idx));
 };

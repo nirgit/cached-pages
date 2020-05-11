@@ -12,10 +12,10 @@ const MENU_ITEM_IDS = {
 const getPageData = (routeId, data) => {
   switch(routeId) {
     case MENU_ITEM_IDS.POSTS: {
-      return data.posts && data.posts.items || []
+      return (data.posts && data.posts.items) || []
     }
     case MENU_ITEM_IDS.MESSAGES: {
-      return data.messages && data.messages.items || []
+      return (data.messages && data.messages.items) || []
     }
     default: return null
   }
